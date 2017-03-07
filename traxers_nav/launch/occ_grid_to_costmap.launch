@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="map_file" default="$(find traxers_nav)/resources/maps/corridor_map.yaml"/>
+
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+  <node name="occ_grid_to_costmap_node" pkg="traxers_nav" type="occ_grid_to_costmap_node" output="screen" />
+</launch>

@@ -2,8 +2,15 @@
 
 <launch>
   <arg name="map_file" default="$(find traxers_nav)/resources/maps/corridor_map.yaml"/>
+  <arg name="rvizconfig" default="$(find traxers_nav)/resources/rviz/map.rviz" />
 
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
-  <node name="occ_grid_to_costmap_node" pkg="traxers_nav" type="occ_grid_to_costmap_node" output="screen" />
+  <node name="occ_grid_to_costmap_node" pkg="traxers_nav" type="occ_grid_to_costmap_node" output="screen">
+    <param name="start_x" value="0.0" />
+    <param name="start_y" value="0.0" />
+    <param name="is_circular" value="true" />
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 </launch>

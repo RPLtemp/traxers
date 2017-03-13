@@ -43,6 +43,19 @@ OccGridToCostmapNode::~OccGridToCostmapNode() {
 void OccGridToCostmapNode::CreateCostmap() {
   // The occupancy grid utils object should be initialized by now
   assert(occ_grid_utils_);
+
+  // If the desired path is circular, the starting point needs to be blocked
+  // off from the goal
+  if (is_circular_) {
+    // First, move the goal back
+    if (!occ_grid_utils_->MoveCells(start_pt_, goal_pt_, -2, 0))
+      throw ros::Exception("Goal point coordinate not valid after move");
+
+    // Next, draw a line of occupied cells between start and goal points
+    Point wall_point;
+    occ_grid_utils_->MoveCells(start_pt_, wall_point, -1, 0);
+    occ_grid_utils_->DrawLine(wall_point, 0, 1);
+  }
 }
 
 void OccGridToCostmapNode::PublishGrid() {
@@ -68,7 +81,7 @@ int main(int argc, char **argv) {
 
   traxers::OccGridToCostmapNode occ_grid_to_costmap_node;
 
-  // Wait until we receive a map.
+  // Wait until we receive a map
   ros::Rate r(10);
   while (!occ_grid_to_costmap_node.ReceivedMap() && ros::ok()) {
     ros::spinOnce();

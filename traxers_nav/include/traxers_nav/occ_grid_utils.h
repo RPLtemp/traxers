@@ -64,14 +64,30 @@ class OccGridUtils {
       return (x + y * width_);
     }
 
-    bool IsInsideGrid(const Point& pt) {
-      int x = (pt.x - origin_x_) / res_;
-      int y = (pt.y - origin_y_) / res_;
+    void DrawLine(const Point& pt, int dir_x, int dir_y) {
+      SetCellState(pt, CELL_STATE::OCCUPIED);
 
-      if (x < 0 || y > 0 || x >= width_ || y >= height_)
-        return false;
-      else
-        return true;
+      int new_ind;
+      bool is_closed_off = false;
+      int shift = 1;
+
+      while (!is_closed_off) {
+        if (MoveCells(pt, new_ind, dir_x * shift, dir_y * shift)) {
+          if (GetCellState(new_ind) == CELL_STATE::OCCUPIED)
+            is_closed_off = true;
+          else
+            SetCellState(new_ind, CELL_STATE::OCCUPIED);
+        }
+
+        if (MoveCells(pt, new_ind, dir_x * shift, -dir_y * shift)) {
+          if (GetCellState(new_ind) != CELL_STATE::OCCUPIED) {
+            SetCellState(new_ind, CELL_STATE::OCCUPIED);
+            is_closed_off = false;
+          }
+        }
+
+        shift++;
+      }
     }
 
     int GetCellState(const int cell_ind) {
@@ -85,6 +101,51 @@ class OccGridUtils {
 
     nav_msgs::OccupancyGrid GetGrid() {
       return grid_;
+    }
+
+    bool IsInsideGrid(const Point& pt) {
+      int x = (pt.x - origin_x_) / res_;
+      int y = (pt.y - origin_y_) / res_;
+
+      if (x < 0 || y < 0 || x >= width_ || y >= height_)
+        return false;
+      else
+        return true;
+    }
+
+    bool MoveCells(const Point& pt, int& new_ind, const int forward = 0,
+                   const int right = 0) {
+      int cell_ind = CellIndFromPoint(pt);
+
+      int x = cell_ind % width_;
+      int y = cell_ind / width_;
+
+      if ((x + right) >= width_ || (x + right) < 0 ||
+           (y + forward) >= height_ || (y + forward) < 0) {
+        new_ind = CELL_STATE::UNKNOWN;
+        return false;
+      }
+      else {
+        new_ind = x + right + (y + forward) * width_;
+        return true;
+      }
+    }
+
+    bool MoveCells(const Point& pt, Point& new_pt, int forward = 0,
+                   int right = 0) {
+      int cell_ind = CellIndFromPoint(pt);
+
+      int x = cell_ind % width_;
+      int y = cell_ind / width_;
+
+      if ((x + right) >= width_ || (x + right) < 0 ||
+           (y + forward) >= height_ || (y + forward) < 0) {
+        return false;
+      }
+      else {
+        new_pt = Point(right * res_, forward * res_) + pt;
+        return true;
+      }
     }
 
     void SetCellState(const int cell_ind, CELL_STATE state) {

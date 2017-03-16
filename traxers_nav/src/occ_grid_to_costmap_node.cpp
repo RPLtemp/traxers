@@ -1,4 +1,4 @@
-#include <traxers_nav/occ_grid_to_costmap_node.h>
+#include "traxers_nav/occ_grid_to_costmap_node.h"
 
 namespace traxers {
 
@@ -22,6 +22,8 @@ OccGridToCostmapNode::OccGridToCostmapNode() :
                " desired path");
     }
   }
+
+  pnh.param("action_extent", action_extent_, kDefaultActionExtent);
 
   std::string grid_pub_topic;
   std::string map_sub_topic;
@@ -56,6 +58,36 @@ void OccGridToCostmapNode::CreateCostmap() {
     occ_grid_utils_->MoveCells(start_pt_, wall_point, -1, 0);
     occ_grid_utils_->DrawLine(wall_point, 0, 1);
   }
+
+  // Initialize the value iteration object with a state space created from our
+  // occupancy grid map
+  value_iteration_.Init(OccGridToStateSpace(occ_grid_utils_->GetGrid()));
+
+  // Add the actions
+  std::vector<int> action_extents = {-action_extent_, action_extent_};
+  for (int x : action_extents) {
+    for (int y = -action_extent_; y <= action_extent_; y++) {
+      value_iteration_.AddAction(Action(x, y));
+    }
+  }
+
+  for (int y : action_extents) {
+    for (int x = -(action_extent_ - 1); x < action_extent_; x++) {
+      value_iteration_.AddAction(Action(x, y));
+    }
+  }
+
+  // Run the value iteration
+  value_iteration_.Run();
+}
+
+StateSpace2D OccGridToCostmapNode::OccGridToStateSpace(
+    const nav_msgs::OccupancyGrid& occ_grid) {
+  StateSpace2D state_space(occ_grid.data,
+                           occ_grid.info.width,
+                           occ_grid.info.height);
+
+  return state_space;
 }
 
 void OccGridToCostmapNode::PublishGrid() {
@@ -63,12 +95,16 @@ void OccGridToCostmapNode::PublishGrid() {
   ros::spinOnce();
 }
 
+bool OccGridToCostmapNode::ReceivedMap() {
+  return received_map_;
+}
+
 void OccGridToCostmapNode::MapCallback(
-    const nav_msgs::OccupancyGridConstPtr& map_msg) {
+    const nav_msgs::OccupancyGridConstPtr& occ_grid_msg) {
   ROS_INFO("Received map");
 
   // Initialize the occupancy grid utils object
-  occ_grid_utils_ = boost::make_shared<OccGridUtils>(map_msg);
+  occ_grid_utils_ = boost::make_shared<OccGridUtils>(occ_grid_msg);
 
   received_map_ = true;
   map_sub_.shutdown();

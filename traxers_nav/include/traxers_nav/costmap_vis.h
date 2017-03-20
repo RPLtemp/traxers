@@ -1,6 +1,7 @@
 #ifndef TRAXERS_COSTMAP_VIS_H
 #define TRAXERS_COSTMAP_VIS_H
 
+#include <opencv2/contrib/contrib.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 

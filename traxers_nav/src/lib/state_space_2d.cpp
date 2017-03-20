@@ -17,7 +17,7 @@ StateSpace2D::StateSpace2D(const std::vector<int8_t>& data, int width, int heigh
 StateSpace2D::~StateSpace2D() {
 }
 
-int StateSpace2D::getHeight() {
+int StateSpace2D::GetHeight() {
   return height_;
 }
 
@@ -27,6 +27,10 @@ int StateSpace2D::GetSize() {
 
 int StateSpace2D::GetWidth() {
   return width_;
+}
+
+int8_t StateSpace2D::GetState(int ind) {
+  return states_.at(ind);
 }
 
 }

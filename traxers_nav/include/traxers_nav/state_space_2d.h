@@ -12,11 +12,13 @@ class StateSpace2D {
     StateSpace2D(const std::vector<int8_t> &data, int width, int height);
     virtual ~StateSpace2D();
 
-    int getHeight();
+    int GetHeight();
+
+    int GetWidth();
 
     int GetSize();
 
-    int GetWidth();
+    int8_t GetState(int ind);
 
   private:
     int width_;

@@ -44,7 +44,7 @@ void ValueIteration::Run(const bool &save_output) {
 
   // Save the value function to a color map image
   if (save_output)
-    SaveCostmapAsImg(V_, state_space_->GetWidth(), state_space_->getHeight());
+    SaveCostmapAsImg(V_, state_space_->GetWidth(), state_space_->GetHeight());
 }
 
 void ValueIteration::SetThreshold(double thresh) {

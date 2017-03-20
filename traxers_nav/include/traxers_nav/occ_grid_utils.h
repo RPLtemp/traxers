@@ -79,7 +79,7 @@ class OccGridUtils {
             SetCellState(new_ind, CELL_STATE::OCCUPIED);
         }
 
-        if (MoveCells(pt, new_ind, dir_x * shift, -dir_y * shift)) {
+        if (MoveCells(pt, new_ind, -dir_x * shift, -dir_y * shift)) {
           if (GetCellState(new_ind) != CELL_STATE::OCCUPIED) {
             SetCellState(new_ind, CELL_STATE::OCCUPIED);
             is_closed_off = false;

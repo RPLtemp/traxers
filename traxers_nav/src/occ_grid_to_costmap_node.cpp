@@ -50,18 +50,23 @@ void OccGridToCostmapNode::CreateCostmap() {
   // off from the goal
   if (is_circular_) {
     // First, move the goal back
-    if (!occ_grid_utils_->MoveCells(start_pt_, goal_pt_, -2, 0))
+    if (!occ_grid_utils_->MoveCells(start_pt_, goal_pt_, -4, 0))
       throw ros::Exception("Goal point coordinate not valid after move");
 
     // Next, draw a line of occupied cells between start and goal points
     Point wall_point;
     occ_grid_utils_->MoveCells(start_pt_, wall_point, -1, 0);
     occ_grid_utils_->DrawLine(wall_point, 0, 1);
+    occ_grid_utils_->MoveCells(wall_point, wall_point, -1, 0);
+    occ_grid_utils_->DrawLine(wall_point, 0, 1);
+    occ_grid_utils_->MoveCells(wall_point, wall_point, -1, 0);
+    occ_grid_utils_->DrawLine(wall_point, 0, 1);
   }
 
   // Initialize the value iteration object with a state space created from our
   // occupancy grid map
-  value_iteration_.Init(OccGridToStateSpace(occ_grid_utils_->GetGrid()));
+  value_iteration_.Init(OccGridToStateSpace(occ_grid_utils_->GetGrid()),
+                        occ_grid_utils_->CellIndFromPoint(goal_pt_));
 
   // Add the actions
   std::vector<int> action_extents = {-action_extent_, action_extent_};

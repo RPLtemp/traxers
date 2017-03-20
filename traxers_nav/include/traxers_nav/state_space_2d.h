@@ -20,6 +20,8 @@ class StateSpace2D {
 
     int8_t GetState(int ind);
 
+    int Move(const int& start_state, const int forward = 0, const int right = 0);
+
   private:
     int width_;
     int height_;

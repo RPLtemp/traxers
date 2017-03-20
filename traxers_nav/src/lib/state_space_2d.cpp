@@ -33,4 +33,16 @@ int8_t StateSpace2D::GetState(int ind) {
   return states_.at(ind);
 }
 
+int StateSpace2D::Move(const int& start_state, const int forward, const int right) {
+  int x = start_state % width_;
+  int y = start_state / width_;
+
+  if ((x + right) >= width_ || (x + right) < 0 ||
+       (y + forward) >= height_ || (y + forward) < 0) {
+    return -1;
+  }
+  else
+    return (x + right + (y + forward) * width_);
+}
+
 }

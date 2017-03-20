@@ -10,8 +10,10 @@
 
 namespace traxers {
 
-// Default threshold
+// Default values
+static constexpr double kDefaultDiscount = 0.9;
 static constexpr double kDefaultThresh = 0.0001;
+static constexpr int kDefaultMaxIterations = 100;
 
 struct Action {
   int x;
@@ -24,19 +26,27 @@ struct Action {
 
 class ValueIteration {
   public:
-    ValueIteration(double thresh = kDefaultThresh);
+    ValueIteration(double discount = kDefaultDiscount, double thresh = kDefaultThresh, int max_iter = kDefaultMaxIterations);
     virtual ~ValueIteration();
 
     void AddAction(const Action& action);
 
-    void Init(const StateSpace2D& states, const std::vector<Action>& actions = std::vector<Action>());
+    void Init(const StateSpace2D& states, const int goal_state, const std::vector<Action>& actions = std::vector<Action>());
 
     void Run(const bool& save_output = true);
+
+    void SetDiscount(double discount);
+
+    void SetMaxIterations(int max_iterations);
 
     void SetThreshold(double thresh);
 
   private:
+    double discount_;
     double thresh_;
+
+    int goal_state_;
+    int max_iterations_;
 
     std::vector<Action> actions_;
 

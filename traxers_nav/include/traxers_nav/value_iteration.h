@@ -5,7 +5,6 @@
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "traxers_nav/costmap_vis.h"
 #include "traxers_nav/state_space_2d.h"
 
 namespace traxers {
@@ -33,7 +32,9 @@ class ValueIteration {
 
     void Init(const StateSpace2D& states, const int goal_state, const std::vector<Action>& actions = std::vector<Action>());
 
-    void Run(const bool& save_output = true);
+    void Run(std::vector<Action>& optimal_actions, std::vector<double>& V);
+
+    void Plan(const std::vector<Action>& optimal_actions, const int start_state, const int goal_state, std::vector<int>& traj);
 
     void SetDiscount(double discount);
 
@@ -49,8 +50,6 @@ class ValueIteration {
     int max_iterations_;
 
     std::vector<Action> actions_;
-
-    std::vector<double> V_;
 
     boost::shared_ptr<StateSpace2D> state_space_;
 };

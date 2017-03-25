@@ -13,10 +13,14 @@
 namespace traxers {
 
 // Constants
-static const std::string kDefaultOutfileName = "./costmap.jpg";
+static const std::string kDefaultCostmapOutfileName = "./costmap.jpg";
+static const std::string kDefaultTrajOutfileName = "./traj.jpg";
 
-void SaveCostmapAsImg(const std::vector<double>& costmap, int width,
-                      int height, const std::string& outfile = "");
+cv::Mat CostmapToImg(const std::vector<double>& costmap, int width, int height,
+                     bool write_file = false, const std::string& outfile = "");
+
+cv::Mat TrajToImg(const cv::Mat& img_cm, const std::vector<int>& traj,
+                  bool write_file = false, const std::string& outfile = "");
 
 }
 

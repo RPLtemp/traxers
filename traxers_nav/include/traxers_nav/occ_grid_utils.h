@@ -99,6 +99,14 @@ class OccGridUtils {
       return grid_.data.at(cell_ind);
     }
 
+    int GetHeight() {
+      return height_;
+    }
+
+    int GetWidth() {
+      return width_;
+    }
+
     nav_msgs::OccupancyGrid GetGrid() {
       return grid_;
     }

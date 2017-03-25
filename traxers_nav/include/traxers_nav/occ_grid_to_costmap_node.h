@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 
+#include "traxers_nav/costmap_vis.h"
 #include "traxers_nav/occ_grid_utils.h"
 #include "traxers_nav/value_iteration.h"
 

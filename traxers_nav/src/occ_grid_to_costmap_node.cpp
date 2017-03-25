@@ -83,7 +83,23 @@ void OccGridToCostmapNode::CreateCostmap() {
   }
 
   // Run the value iteration
-  value_iteration_.Run();
+  std::vector<Action> optimal_actions;
+  std::vector<double> value_func;
+  value_iteration_.Run(optimal_actions, value_func);
+
+  // Convert the value function to a color map image
+  cv::Mat img_cm = CostmapToImg(value_func, occ_grid_utils_->GetWidth(),
+                                occ_grid_utils_->GetHeight(), true);
+
+  // Get the optimal trajectory from start to goal state
+  std::vector<int> traj;
+  value_iteration_.Plan(optimal_actions,
+                        occ_grid_utils_->CellIndFromPoint(start_pt_),
+                        occ_grid_utils_->CellIndFromPoint(goal_pt_),
+                        traj);
+
+  // Display the planned trajectory in an image
+  TrajToImg(img_cm, traj, true);
 }
 
 StateSpace2D OccGridToCostmapNode::OccGridToStateSpace(

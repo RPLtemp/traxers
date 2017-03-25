@@ -11,9 +11,9 @@
 namespace traxers {
 
 // Default values
-static constexpr double kDefaultDiscount = 0.9;
-static constexpr double kDefaultThresh = 0.0001;
-static constexpr int kDefaultMaxIterations = 100;
+static constexpr double kDefaultDiscount = 0.99;
+static constexpr double kDefaultThresh = 0.000001;
+static constexpr int kDefaultMaxIterations = 500;
 
 struct Action {
   int x;

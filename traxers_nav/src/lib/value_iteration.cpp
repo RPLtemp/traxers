@@ -52,7 +52,7 @@ void ValueIteration::Run(const bool &save_output) {
       // Special case: if the current state is in the wall - should not be
       // there and can't get out of it
       if (state_space_->GetState(i) == 100)
-        max_value = -200.0;
+        max_value = 0.0;
       else {
         // Loop through all the possible actions
         for (Action a : actions_) {
@@ -62,7 +62,7 @@ void ValueIteration::Run(const bool &save_output) {
           double value;
 
           if (new_state == -1) {
-            value = -200.0;
+            value = 0.0;
           }
           else {
             double reward = 0.0;
@@ -97,8 +97,8 @@ void ValueIteration::Run(const bool &save_output) {
     delta = max_delta;
 
     iteration++;
-    std::cout << "Iteration: " << iteration << std::endl;
-    std::cout << "Max delta: " << delta << std::endl;
+    //std::cout << "Iteration: " << iteration << std::endl;
+    //std::cout << "Max delta: " << delta << std::endl;
   }
 
   // Save the value function to a color map image
